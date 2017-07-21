@@ -5,6 +5,7 @@
 # Written while listening to "The Devil's Trill Sonata" by Giuseppe Tartini on repeat.
 
 # v1.0 : 14-06-2017 - Initial version
+# v1.1 : 21-07-2017 - Swapped computer groups and extension attributes around for reliability.
 
 # Deliberately leaves accounts alone. So you can get back in ;)
 
@@ -33,12 +34,12 @@ jssitem[19]="vppinvitations"
 jssitem[20]="webhooks"
 jssitem[21]="diskencryptionconfigurations"
 jssitem[22]="ebooks"
-jssitem[23]="computerextensionattributes" 	# Computer configuration
+jssitem[23]="computergroups" 	# Computer configuration
 jssitem[24]="dockitems"
 jssitem[25]="printers"
 jssitem[26]="licensedsoftware"
 jssitem[27]="scripts"
-jssitem[28]="computergroups"
+jssitem[28]="computerextensionattributes"
 jssitem[29]="restrictedsoftware"
 jssitem[30]="osxconfigurationprofiles"
 jssitem[31]="macapplications"
@@ -102,7 +103,8 @@ do
 
 	# Grab all existing ID's for the current category we're processing
 	echo -e "\n\nProcessing ID list for ${jssitem[$loop]}\n"
-	curl -s -k --user "$jssapiuser:$jssapipwd" $jssaddress$jssinstance/JSSResource/${jssitem[$loop]} | xmllint --format - > /tmp/unprocessedid
+	curl -k --user "$jssapiuser:$jssapipwd" $jssaddress$jssinstance/JSSResource/${jssitem[$loop]} | xmllint --format - > /tmp/unprocessedid
+#	curl -s -k --user "$jssapiuser:$jssapipwd" $jssaddress$jssinstance/JSSResource/${jssitem[$loop]} | xmllint --format - > /tmp/unprocessedid
 
 	# Check if any ids have been captured. Skip if none present.
 	check=$( echo /tmp/unprocessedid | grep "<size>0</size>" | wc -l | awk '{ print $1 }' )
@@ -121,7 +123,8 @@ do
 		for apiID in $(cat /tmp/processedid)
 		do
 			echo "Deleting ID number $apiID ( $resultInt out of $totalFetchedIDs )"
-			curl -s -k --user "$jssapiuser:$jssapipwd" -H "Content-Type: application/xml" -X DELETE "$jssaddress$jssinstance/JSSResource/${jssitem[$loop]}/id/$apiID"
+			curl -k --user "$jssapiuser:$jssapipwd" -H "Content-Type: application/xml" -X DELETE "$jssaddress$jssinstance/JSSResource/${jssitem[$loop]}/id/$apiID"
+#			curl -s -k --user "$jssapiuser:$jssapipwd" -H "Content-Type: application/xml" -X DELETE "$jssaddress$jssinstance/JSSResource/${jssitem[$loop]}/id/$apiID"
 			resultInt=$(($resultInt + 1))
 		done	
 	else
